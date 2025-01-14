@@ -26,7 +26,8 @@ How It Works
     - The IV is extracted from the base64 string, and the encrypted data is decrypted using the same AES-256-CBC algorithm and key.
     - The decrypted data is returned in its original form.
 
-#Getting Started
+
+Getting Started
 
 Prerequisites
 
