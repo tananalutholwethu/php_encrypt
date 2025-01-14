@@ -1,45 +1,45 @@
-<?php
-namespace Library;
+<?php require_once 'Backend.php'; ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encryption Example</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-800 font-sans">
+    <div class="container mx-auto p-8">
+        <div class="bg-white p-6 rounded-lg shadow-lg">
+            <h1 class="text-2xl font-bold text-center mb-4">Encrypt and Decrypt Your Data</h1>
 
-class Encrypt {
+            <!-- Form for user input -->
+            <form method="POST" action="<?php echo $_SERVER['PHP_SELF']; ?>" class="mb-6">
+                <label for="data" class="block text-lg font-semibold">Enter Data to Encrypt:</label>
+                <textarea name="data" id="data" rows="4" class="w-full mt-2 p-3 border border-gray-300 rounded-md" required></textarea>
+                <button type="submit" class="mt-4 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">Encrypt</button>
+            </form>
 
-    private $key;
+            <?php if (!empty($errorMessage)): ?>
+                <div class="mb-6 text-red-600">
+                    <h2 class="text-xl font-semibold">Error:</h2>
+                    <p class="bg-red-200 p-4 rounded text-sm text-red-800 mt-2"><?php echo htmlspecialchars($errorMessage); ?></p>
+                </div>
+            <?php endif; ?>
 
-    public function __construct() {
-        $this->key= "ldfhahhahtdot674hs4wyhhw6yjhfd8b"; // encryption key
-    }
+            <?php if ($encrypted): ?>
+                <div class="mb-6">
+                    <h2 class="text-xl font-semibold">Encrypted Data:</h2>
+                    <p class="bg-gray-200 p-4 rounded text-sm text-gray-800 mt-2"><?php echo htmlspecialchars($encrypted); ?></p>
+                </div>
+            <?php endif; ?>
 
-    public function encryptData($data) {
-        // Encrypt the data
-        $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length('aes-256-cbc'));
-        $encrypted = openssl_encrypt($data, 'aes-256-cbc', $this->key, 0, $iv);
-        return base64_encode($encrypted . '::' . $iv);
-    }
-
-    public function decryptData($encryptedData) {
-        // Base64 decode the encrypted data
-        $decodedData = base64_decode($encryptedData);
-
-        // Check if the data contains the delimiter '::'
-        if (strpos($decodedData, '::') === false) {
-            throw new \Exception("Invalid encrypted data format.");
-        }
-
-        // Split the base64 decoded data into encrypted data and IV
-        list($encrypted_data, $iv) = explode('::', $decodedData, 2);
-
-        // Decrypt the data
-        return openssl_decrypt($encrypted_data, 'aes-256-cbc', $this->key, 0, $iv);
-    }
-
-}
-
-// Example usage
-$rw = new Encrypt();
-
-$data = '{"bank_name":"Rand Merchant Bank (RMB)","branch_code":"198765","branch_name":"Hedy Bean","account_number":"632","account_type":"current","account_name":"Piper Norris"}';
-$encrypted = $rw->encryptData($data);
-echo "Encrypted: " . $encrypted . "\n";
-
-$decrypted = $rw->decryptData($encrypted);
-echo "Decrypted: " . $decrypted . "\n";
+            <?php if ($decrypted): ?>
+                <div class="mb-6">
+                    <h2 class="text-xl font-semibold">Decrypted Data:</h2>
+                    <pre class="bg-gray-200 p-4 rounded text-sm text-gray-800 mt-2"><?php echo htmlspecialchars($decrypted); ?></pre>
+                </div>
+            <?php endif; ?>
+        </div>
+    </div>
+</body>
+</html>
